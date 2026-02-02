@@ -9,12 +9,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Skip prefetch requests (Next.js Link prefetching)
+  // Only log actual document navigations, skip:
+  // - Prefetch requests (Next.js Link prefetching)
+  // - RSC (React Server Component) data fetches
+  // - Background fetches
   const isPrefetch = request.headers.get('next-router-prefetch') === '1'
     || request.headers.get('purpose') === 'prefetch'
     || request.headers.get('sec-purpose') === 'prefetch'
 
-  if (isPrefetch) {
+  const isRSC = request.headers.get('rsc') === '1'
+    || request.headers.get('next-router-state-tree') !== null
+
+  const isBackgroundFetch = request.headers.get('sec-fetch-dest') === 'empty'
+
+  if (isPrefetch || isRSC || isBackgroundFetch) {
     return NextResponse.next()
   }
 
