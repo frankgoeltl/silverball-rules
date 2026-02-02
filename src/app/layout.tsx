@@ -3,6 +3,7 @@ import { Montserrat, Roboto } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import PageViewLogger from "@/components/PageViewLogger";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -54,6 +55,7 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${roboto.variable} antialiased min-h-screen flex flex-col`}
       >
+        <PageViewLogger />
         <Navigation />
         <main className="flex-1">
           {children}
