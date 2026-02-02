@@ -158,13 +158,12 @@ export default async function RulesPage({
             <h1 className="text-3xl md:text-4xl font-bold text-[var(--dark-green)] mb-2">
               {machineName}
             </h1>
-            {opdbMachine && (
-              <p className="text-gray-600">
-                {opdbMachine.manufacturer_name && `${opdbMachine.manufacturer_name} • `}
-                {formatYear(opdbMachine.manufacture_date)}
-                {opdbMachine.type && ` • ${opdbMachine.type}`}
-              </p>
-            )}
+            <p className="text-gray-600">
+              {opdbMachine?.manufacturer_name && `${opdbMachine.manufacturer_name} • `}
+              {opdbMachine && formatYear(opdbMachine.manufacture_date)}
+              {opdbMachine?.type && ` • ${opdbMachine.type}`}
+            </p>
+            <p className="text-gray-400 text-sm font-mono mt-1">{opendbId}</p>
           </div>
 
           {/* Action buttons */}
