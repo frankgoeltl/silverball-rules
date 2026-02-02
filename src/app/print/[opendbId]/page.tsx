@@ -220,7 +220,7 @@ export default async function PrintPage({
       {rule?.skillShot && (
         <section className="mb-4">
           <h2 className="text-lg font-bold text-dark-green mb-1">Skill Shot:</h2>
-          <p className="whitespace-pre-line">{rule.skillShot}</p>
+          <p className="whitespace-pre-line capitalize-first-letter">{rule.skillShot}</p>
         </section>
       )}
 

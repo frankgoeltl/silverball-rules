@@ -281,7 +281,7 @@ export default async function RulesPage({
         {rule?.shotsToMaster && (
           <div className="bg-white border border-gray-200 p-4 rounded-lg">
             <h3 className="text-sm font-bold text-gray-500 mb-1">Shots to Master</h3>
-            <p className="text-lg font-semibold text-[var(--dark-green)]">{rule.shotsToMaster}</p>
+            <p className="text-lg font-semibold text-[var(--dark-green)] capitalize-first-letter">{rule.shotsToMaster}</p>
           </div>
         )}
       </div>
@@ -292,7 +292,7 @@ export default async function RulesPage({
           <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
             Skill Shot
           </h2>
-          <p className="preserve-linebreaks">{rule.skillShot}</p>
+          <p className="preserve-linebreaks capitalize-first-letter">{rule.skillShot}</p>
         </section>
       )}
 
