@@ -178,10 +178,10 @@ export default async function PrintPage({
             <p className="mb-1"><strong>Display:</strong> {opdbMachine.display}</p>
           )}
           {rule?.quickieVersion && (
-            <>
-              <p className="font-bold mt-3 mb-1">Quickie Version:</p>
+            <div className="mt-3 p-3 bg-gray-100 rounded">
+              <p className="font-bold mb-1">Quickie Version:</p>
               <p className="whitespace-pre-line capitalize-first-letter">{rule.quickieVersion}</p>
-            </>
+            </div>
           )}
         </div>
       </div>
