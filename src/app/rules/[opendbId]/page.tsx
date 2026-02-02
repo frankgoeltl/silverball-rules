@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Info, Printer, ExternalLink } from 'lucide-react'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
@@ -108,6 +109,19 @@ async function getMachineData(opendbId: string): Promise<PinData | null> {
   } catch {
     return null
   }
+}
+
+export async function generateStaticParams() {
+  const supabase = getSupabaseClient()
+
+  // Pre-render pages for all machines with rules
+  const { data: rules } = await supabase
+    .from('pinball_rules')
+    .select('opendb_id')
+
+  return (rules || []).map((rule) => ({
+    opendbId: rule.opendb_id,
+  }))
 }
 
 export async function generateMetadata({
@@ -314,12 +328,16 @@ export default async function RulesPage({
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           {opdbMachine?.image_url_medium && (
             <div className="p-4 bg-gray-50">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={opdbMachine.image_url_medium}
-                alt={`${machineName} backglass`}
-                className="max-w-full md:max-w-[50%] mx-auto rounded-lg"
-              />
+              <div className="relative w-full md:w-1/2 mx-auto aspect-[3/4]">
+                <Image
+                  src={opdbMachine.image_url_medium}
+                  alt={`${machineName} backglass`}
+                  fill
+                  className="object-contain rounded-lg"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority={false}
+                />
+              </div>
             </div>
           )}
           <div className="p-4">
