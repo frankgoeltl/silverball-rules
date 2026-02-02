@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'About - Silverball Rules',
@@ -71,14 +70,36 @@ export default function AboutPage() {
         <ul className="space-y-2">
           <li>
             <a
-              href="https://pintips.net"
+              href="https://www.abeflips.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--dark-green)] hover:underline"
             >
-              PinTips.net
+              Abe Flips
             </a>
-            {' '}- Community pinball tips and strategies
+            {' '}- Master pinball techniques with in-depth tutorials
+          </li>
+          <li>
+            <a
+              href="https://www.ifpapinball.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--dark-green)] hover:underline"
+            >
+              IFPA
+            </a>
+            {' '}- International Flipper Pinball Association
+          </li>
+          <li>
+            <a
+              href="https://app.matchplay.events"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--dark-green)] hover:underline"
+            >
+              Match Play Events
+            </a>
+            {' '}- Tournament software
           </li>
           <li>
             <a
@@ -104,26 +125,40 @@ export default function AboutPage() {
           </li>
           <li>
             <a
-              href="https://www.ifpapinball.com"
+              href="https://pinballprimer.github.io/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[var(--dark-green)] hover:underline"
             >
-              IFPA
+              Pinball Primer
             </a>
-            {' '}- International Flipper Pinball Association
+            {' '}- Modern pinball machine rulesets
+          </li>
+          <li>
+            <a
+              href="https://pintips.net"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--dark-green)] hover:underline"
+            >
+              PinTips.net
+            </a>
+            {' '}- Community pinball tips and strategies
+          </li>
+          <li>
+            <a
+              href="https://tiltforums.com/c/game-specific/rulesheet-wikis/18"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--dark-green)] hover:underline"
+            >
+              Tilt Forums Rulesheets
+            </a>
+            {' '}- Community-maintained rulesheet wikis
           </li>
         </ul>
       </section>
 
-      <div className="text-center pt-8 border-t border-gray-200">
-        <Link
-          href="/"
-          className="text-[var(--dark-green)] hover:underline font-medium"
-        >
-          ← Back to Home
-        </Link>
-      </div>
     </div>
   )
 }

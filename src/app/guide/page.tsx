@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { ChevronDown, ChevronUp, Printer } from 'lucide-react'
 
 interface AccordionItem {
@@ -447,25 +446,25 @@ function Accordion({ items }: { items: AccordionItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 print:space-y-4">
       {items.map((item, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
+        <div key={index} className="border border-gray-200 rounded-lg overflow-hidden print:border-0 print:border-b print:rounded-none">
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+            className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left print:bg-transparent print:p-0 print:pb-2"
           >
             <span className="font-semibold text-[var(--dark-green)]">{item.title}</span>
-            {openIndex === index ? (
-              <ChevronUp size={20} className="text-gray-500 flex-shrink-0" />
-            ) : (
-              <ChevronDown size={20} className="text-gray-500 flex-shrink-0" />
-            )}
+            <span className="print:hidden">
+              {openIndex === index ? (
+                <ChevronUp size={20} className="text-gray-500 flex-shrink-0" />
+              ) : (
+                <ChevronDown size={20} className="text-gray-500 flex-shrink-0" />
+              )}
+            </span>
           </button>
-          {openIndex === index && (
-            <div className="p-4 text-gray-700">
-              {item.content}
-            </div>
-          )}
+          <div className={`p-4 text-gray-700 print:block print:p-0 print:pt-2 ${openIndex === index ? 'block' : 'hidden'}`}>
+            {item.content}
+          </div>
         </div>
       ))}
     </div>
@@ -499,14 +498,6 @@ export default function GuidePage() {
 
       <Accordion items={guideContent} />
 
-      <div className="text-center pt-8 mt-8 border-t border-gray-200 print:hidden">
-        <Link
-          href="/"
-          className="text-[var(--dark-green)] hover:underline font-medium"
-        >
-          ← Back to Home
-        </Link>
-      </div>
     </div>
   )
 }
