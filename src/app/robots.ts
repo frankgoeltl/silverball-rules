@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/reports', '/print/', '/api/'],
     },
-    sitemap: 'https://silverball.rules/sitemap.xml',
+    sitemap: 'https://rules.silverballmania.com/sitemap.xml',
   }
 }

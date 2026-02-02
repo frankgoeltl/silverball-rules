@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 import { createClient } from '@supabase/supabase-js'
 
-const BASE_URL = 'https://silverball.rules'
+const BASE_URL = 'https://rules.silverballmania.com'
 
 function getSupabaseClient() {
   return createClient(

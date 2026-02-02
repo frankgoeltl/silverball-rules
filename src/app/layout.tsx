@@ -20,7 +20,8 @@ export const metadata: Metadata = {
   title: "Silverball Rules - Bob's Guide to Classic Pinball Machines",
   description: "Rules, tips, and strategies for classic pinball machines. Find quickie rules, full strategies, and expert advice from Bob Matthews.",
   keywords: "pinball, rules, strategy, classic pinball, Bob Matthews, silverball",
-  metadataBase: new URL('https://silverball.rules'),
+  metadataBase: new URL('https://rules.silverballmania.com'),
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/favicon.ico" },

@@ -194,7 +194,7 @@ export default async function RulesPage({
     publisher: {
       '@type': 'Organization',
       name: 'Silverball Rules',
-      url: 'https://silverball.rules',
+      url: 'https://rules.silverballmania.com',
     },
     mainEntity: {
       '@type': 'Product',
