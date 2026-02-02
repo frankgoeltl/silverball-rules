@@ -9,20 +9,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Only log actual document navigations, skip:
-  // - Prefetch requests (Next.js Link prefetching)
-  // - RSC (React Server Component) data fetches
-  // - Background fetches
-  const isPrefetch = request.headers.get('next-router-prefetch') === '1'
-    || request.headers.get('purpose') === 'prefetch'
-    || request.headers.get('sec-purpose') === 'prefetch'
+  // Only log actual document navigations (strict positive match)
+  // sec-fetch-dest: document = full page navigation
+  // sec-fetch-mode: navigate = user-initiated navigation
+  const isDocumentNavigation = request.headers.get('sec-fetch-dest') === 'document'
+    && request.headers.get('sec-fetch-mode') === 'navigate'
 
-  const isRSC = request.headers.get('rsc') === '1'
-    || request.headers.get('next-router-state-tree') !== null
-
-  const isBackgroundFetch = request.headers.get('sec-fetch-dest') === 'empty'
-
-  if (isPrefetch || isRSC || isBackgroundFetch) {
+  if (!isDocumentNavigation) {
     return NextResponse.next()
   }
 
