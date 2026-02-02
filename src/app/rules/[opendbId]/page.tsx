@@ -281,15 +281,25 @@ export default async function RulesPage({
             label="PinTips"
           />
           <ExternalLinkButton
+            href={`https://www.pinvids.net/?query=${encodeURIComponent(machineName)}`}
+            label="PinVideos"
+          />
+          <ExternalLinkButton
+            href={`https://matchplay.events/live/ratings/machine/${encodeURIComponent(machineName)}`}
+            label="Match Play"
+          />
+          <ExternalLinkButton
             href={`https://www.youtube.com/results?search_query=${encodeURIComponent(machineName + ' pinball')}`}
             label="YouTube"
           />
-          {opdbMachine?.opdbId && (
-            <ExternalLinkButton
-              href={`https://opdb.org/machines/${opdbMachine.opdbId}`}
-              label="OPDB"
-            />
-          )}
+          <ExternalLinkButton
+            href={`https://opdb.org/search?q=${encodeURIComponent(machineName)}`}
+            label="OPDB"
+          />
+          <ExternalLinkButton
+            href={`https://www.ipdb.org/search.pl?name=${encodeURIComponent(machineName)}&searchtype=quick`}
+            label="IPDB"
+          />
         </div>
       </section>
 
