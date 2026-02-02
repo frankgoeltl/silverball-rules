@@ -23,6 +23,7 @@ interface Machine {
 interface OpdbMachine {
   opdbId: string
   name: string | null
+  shortname: string | null
   manufacture_date: string | null
   manufacturer_name: string | null
   type: string | null
@@ -89,6 +90,7 @@ async function getMachineData(opendbId: string): Promise<PinData | null> {
       opdbMachine: opdbMachine ? {
         opdbId: opdbMachine.opdb_id,
         name: opdbMachine.name,
+        shortname: opdbMachine.shortname,
         manufacture_date: opdbMachine.manufacture_date,
         manufacturer_name: opdbMachine.manufacturer_name,
         type: opdbMachine.type,
@@ -140,79 +142,73 @@ export default async function PrintPage({
   const rule = rules[0]
   const machineName = pinballMachine?.name || opdbMachine?.name || 'Unknown Machine'
 
+  const typeDisplay = opdbMachine?.type?.toUpperCase() || ''
+  const titleParts = [machineName]
+  if (typeDisplay) titleParts[0] += ` ${typeDisplay}`
+  if (opdbMachine?.manufacturer_name) titleParts.push(opdbMachine.manufacturer_name)
+  if (opdbMachine?.manufacture_date) titleParts.push(formatYear(opdbMachine.manufacture_date))
+
   return (
     <div className="max-w-3xl mx-auto p-8 print:p-4">
-      {/* Header */}
-      <header className="border-b-2 border-black pb-4 mb-6">
-        <h1 className="text-3xl font-bold">{machineName}</h1>
-        <p className="text-gray-600">
-          {opdbMachine?.manufacturer_name && `${opdbMachine.manufacturer_name}`}
-          {opdbMachine?.manufacture_date && ` (${formatYear(opdbMachine.manufacture_date)})`}
-          {opdbMachine?.type && ` • ${opdbMachine.type}`}
-        </p>
-        <p className="text-sm text-gray-500 mt-2">
-          From Bob&apos;s Guide to Classic Pinball Machines • silverballrules.com
-        </p>
-      </header>
+      {/* Header with title */}
+      <h1 className="text-2xl font-bold text-dark-green mb-4">
+        {titleParts[0]}{titleParts.length > 1 ? ` - ${titleParts.slice(1).join(' | ')}` : ''}
+      </h1>
 
-      {/* Quickie Version */}
-      {rule?.quickieVersion && (
-        <section className="mb-6">
-          <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2">
-            Quickie Version
-          </h2>
-          <p className="whitespace-pre-line">{rule.quickieVersion}</p>
+      {/* Image and machine info section */}
+      <div className="flex gap-6 mb-6">
+        {opdbMachine?.image_url_medium && (
+          <div className="flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={opdbMachine.image_url_medium}
+              alt={`${machineName} backglass`}
+              className="w-40 h-auto"
+            />
+          </div>
+        )}
+        <div className="flex-1">
+          {opdbMachine?.shortname && (
+            <p className="mb-1"><strong>Shortname:</strong> {opdbMachine.shortname}</p>
+          )}
+          {opdbMachine?.player_count && (
+            <p className="mb-1"><strong>Players:</strong> {opdbMachine.player_count}</p>
+          )}
+          {opdbMachine?.display && (
+            <p className="mb-1"><strong>Display:</strong> {opdbMachine.display}</p>
+          )}
+          {rule?.quickieVersion && (
+            <>
+              <p className="font-bold mt-3 mb-1">Quickie Version:</p>
+              <p className="whitespace-pre-line capitalize-first-letter">{rule.quickieVersion}</p>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Go-to Flipper */}
+      {rule?.goToFlipper && (
+        <section className="mb-4">
+          <h2 className="text-lg font-bold text-dark-green mb-1">Go-to Flipper:</h2>
+          <p>{rule.goToFlipper}</p>
         </section>
       )}
 
-      {/* Quick stats in a row */}
-      <section className="mb-6 grid grid-cols-3 gap-4 text-sm">
-        {rule?.goToFlipper && (
-          <div>
-            <strong>Go-To Flipper:</strong> {rule.goToFlipper}
-          </div>
-        )}
-        {rule?.riskIndex && (
-          <div>
-            <strong>Risk Index:</strong> {rule.riskIndex}
-          </div>
-        )}
-        {rule?.shotsToMaster && (
-          <div>
-            <strong>Shots to Master:</strong> {rule.shotsToMaster}
-          </div>
-        )}
-      </section>
-
-      {/* Skill Shot */}
-      {rule?.skillShot && (
-        <section className="mb-6">
-          <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2">
-            Skill Shot
-          </h2>
-          <p className="whitespace-pre-line">{rule.skillShot}</p>
-        </section>
-      )}
-
-      {/* Style Alert */}
-      {rule?.styleAlert && (
-        <section className="mb-6">
-          <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2">
-            Style Alert
-          </h2>
-          <p className="whitespace-pre-line italic">{rule.styleAlert}</p>
+      {/* Playfield Risk */}
+      {rule?.playfieldRisk && (
+        <section className="mb-4">
+          <h2 className="text-lg font-bold text-dark-green mb-1">Playfield Risk:</h2>
+          <p className="whitespace-pre-line">{rule.playfieldRisk}</p>
         </section>
       )}
 
       {/* Full Rules */}
       {rule?.fullRules && (
-        <section className="mb-6">
-          <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2">
-            Full Rules
-          </h2>
-          <div className="space-y-3 text-sm">
+        <section className="mb-4">
+          <h2 className="text-lg font-bold text-dark-green mb-1">Full Rules:</h2>
+          <div className="space-y-3">
             {rule.fullRules.split('\n\n').map((paragraph, index) => (
-              <p key={index} className="whitespace-pre-line">
+              <p key={index} className="whitespace-pre-line capitalize-first-letter">
                 {paragraph}
               </p>
             ))}
@@ -220,20 +216,21 @@ export default async function PrintPage({
         </section>
       )}
 
-      {/* Playfield Risk */}
-      {rule?.playfieldRisk && (
-        <section className="mb-6">
-          <h2 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2">
-            Playfield Risk
-          </h2>
-          <p className="whitespace-pre-line">{rule.playfieldRisk}</p>
+      {/* Skill Shot */}
+      {rule?.skillShot && (
+        <section className="mb-4">
+          <h2 className="text-lg font-bold text-dark-green mb-1">Skill Shot:</h2>
+          <p className="whitespace-pre-line">{rule.skillShot}</p>
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="mt-8 pt-4 border-t border-gray-300 text-xs text-gray-500 text-center">
-        Printed from Silverball Rules • Bob&apos;s Guide to Classic Pinball Machines
-      </footer>
+      {/* Style Alert */}
+      {rule?.styleAlert && (
+        <section className="mb-4">
+          <h2 className="text-lg font-bold text-dark-orange mb-1">Style Alert:</h2>
+          <p className="whitespace-pre-line italic">{rule.styleAlert}</p>
+        </section>
+      )}
     </div>
   )
 }

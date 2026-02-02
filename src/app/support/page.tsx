@@ -20,14 +20,14 @@ export default function SupportPage() {
         </h2>
         <div className="space-y-4">
           <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-            <Mail className="text-[var(--bright-green)] mt-1" size={24} />
+            <Mail className="text-[var(--dark-green)] mt-1" size={24} />
             <div>
               <h3 className="font-semibold mb-1">Email</h3>
               <p className="text-gray-600">
                 For questions, corrections, or suggestions, please email us at{' '}
                 <a
                   href="mailto:info@silverballmania.com"
-                  className="text-[var(--bright-green)] hover:underline"
+                  className="text-[var(--dark-green)] hover:underline"
                 >
                   info@silverballmania.com
                 </a>
@@ -36,7 +36,7 @@ export default function SupportPage() {
           </div>
 
           <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-            <MessageCircle className="text-[var(--bright-green)] mt-1" size={24} />
+            <MessageCircle className="text-[var(--dark-green)] mt-1" size={24} />
             <div>
               <h3 className="font-semibold mb-1">Feedback</h3>
               <p className="text-gray-600">
@@ -89,7 +89,7 @@ export default function SupportPage() {
       <div className="text-center pt-8 border-t border-gray-200">
         <Link
           href="/"
-          className="text-[var(--bright-green)] hover:underline font-medium"
+          className="text-[var(--dark-green)] hover:underline font-medium"
         >
           ← Back to Home
         </Link>

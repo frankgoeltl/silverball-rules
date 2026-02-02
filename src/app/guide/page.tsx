@@ -502,7 +502,7 @@ export default function GuidePage() {
       <div className="text-center pt-8 mt-8 border-t border-gray-200 print:hidden">
         <Link
           href="/"
-          className="text-[var(--bright-green)] hover:underline font-medium"
+          className="text-[var(--dark-green)] hover:underline font-medium"
         >
           ← Back to Home
         </Link>

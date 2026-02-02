@@ -55,7 +55,7 @@ export default function PinList({ machines }: PinListProps) {
               className={`
                 w-10 h-10 rounded-lg font-medium text-sm transition-colors
                 ${isSelected
-                  ? 'bg-[var(--bright-green)] text-white'
+                  ? 'bg-[var(--dark-green)] text-white'
                   : isAvailable
                     ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                     : 'bg-gray-50 text-gray-300 cursor-not-allowed'
@@ -79,7 +79,7 @@ export default function PinList({ machines }: PinListProps) {
           <Link
             key={machine.opendbId}
             href={`/rules/${machine.opendbId}`}
-            className="p-3 border border-gray-200 rounded-lg hover:border-[var(--bright-green)] hover:shadow-md transition-all"
+            className="p-3 border border-gray-200 rounded-lg hover:border-[var(--dark-green)] hover:shadow-md transition-all"
           >
             <span className="text-[var(--dark-green)] font-medium">{machine.name}</span>
           </Link>

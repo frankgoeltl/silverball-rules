@@ -102,7 +102,7 @@ export default function PinSearch({ autoFocus = false, placeholder = 'Search for
           onBlur={() => setTimeout(() => setShowResults(false), 200)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full pl-12 pr-12 py-3 rounded-lg border-2 border-gray-300 focus:border-[var(--bright-green)] focus:outline-none text-lg"
+          className="w-full pl-12 pr-12 py-3 rounded-lg border-2 border-gray-300 focus:border-[var(--dark-green)] focus:outline-none text-lg"
         />
         {isLoading && (
           <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 animate-spin" size={20} />

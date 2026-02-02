@@ -23,14 +23,18 @@
   --color-dark-grey: var(--dark-grey);
   --color-light-grey: var(--light-grey);
   --color-dark-orange: var(--dark-orange);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-roboto);
+  --font-heading: var(--font-montserrat);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-family: var(--font-roboto), 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-montserrat), 'Montserrat', Arial, Helvetica, sans-serif;
 }
 
 /* Preserve line breaks in rule text */

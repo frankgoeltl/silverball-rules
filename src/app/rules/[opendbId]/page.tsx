@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Share2, Info, Printer, ExternalLink } from 'lucide-react'
+import { Info, Printer, ExternalLink } from 'lucide-react'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
+import ShareButton from '@/components/ShareButton'
 
 interface Rule {
   opendbId: string
@@ -168,12 +169,7 @@ export default async function RulesPage({
 
           {/* Action buttons */}
           <div className="flex gap-2">
-            <button
-              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              title="Share"
-            >
-              <Share2 size={20} className="text-gray-600" />
-            </button>
+            <ShareButton />
             <a
               href="#machine-info"
               className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
@@ -199,7 +195,7 @@ export default async function RulesPage({
             Quickie Version
           </h2>
           <div className="bg-[var(--light-grey)] p-4 rounded-lg">
-            <p className="text-lg preserve-linebreaks">{rule.quickieVersion}</p>
+            <p className="text-lg preserve-linebreaks capitalize-first-letter">{rule.quickieVersion}</p>
           </div>
         </section>
       )}
@@ -208,7 +204,7 @@ export default async function RulesPage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {rule?.goToFlipper && (
           <div className="bg-white border border-gray-200 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Go-To Flipper</h3>
+            <h3 className="text-sm font-bold text-gray-500 mb-1">Go-To Flipper</h3>
             <p className="text-lg font-semibold text-[var(--dark-green)]">{rule.goToFlipper}</p>
           </div>
         )}
@@ -220,7 +216,7 @@ export default async function RulesPage({
         )}
         {rule?.shotsToMaster && (
           <div className="bg-white border border-gray-200 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Shots to Master</h3>
+            <h3 className="text-sm font-bold text-gray-500 mb-1">Shots to Master</h3>
             <p className="text-lg font-semibold text-[var(--dark-green)]">{rule.shotsToMaster}</p>
           </div>
         )}
@@ -372,7 +368,7 @@ export default async function RulesPage({
       <div className="text-center">
         <Link
           href="/list"
-          className="text-[var(--bright-green)] hover:underline font-medium"
+          className="text-[var(--dark-green)] hover:underline font-medium"
         >
           ← Back to machine list
         </Link>
@@ -387,7 +383,7 @@ function ExternalLinkButton({ href, label }: { href: string; label: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--bright-green)] text-white rounded-lg hover:bg-[var(--dark-green)] transition-colors text-sm font-medium"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--dark-green)] text-white rounded-lg hover:bg-[var(--dark-green)] transition-colors text-sm font-medium"
     >
       {label}
       <ExternalLink size={14} />

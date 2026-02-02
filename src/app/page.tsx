@@ -53,7 +53,7 @@ export default async function Home() {
               href="https://projectpinball.org/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               Project Pinball
             </a>
@@ -65,7 +65,7 @@ export default async function Home() {
               href="https://youtu.be/PvgZ6LF4A-g"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               introduction video on YouTube
             </a>
@@ -84,7 +84,7 @@ export default async function Home() {
 
         <p className="text-gray-600 mb-8">
           You can also{' '}
-          <Link href="/list" className="text-[var(--bright-green)] hover:underline">
+          <Link href="/list" className="text-[var(--dark-green)] hover:underline">
             explore the list
           </Link>
           ...
@@ -93,13 +93,13 @@ export default async function Home() {
         <div className="flex justify-center gap-4">
           <Link
             href="/list"
-            className="bg-[var(--bright-green)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] transition-colors"
+            className="bg-[var(--dark-green)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] transition-colors"
           >
             Browse All Machines
           </Link>
           <Link
             href="/guide"
-            className="border-2 border-[var(--bright-green)] text-[var(--bright-green)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--bright-green)] hover:text-white transition-colors"
+            className="border-2 border-[var(--dark-green)] text-[var(--dark-green)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] hover:text-white transition-colors"
           >
             Read the Guide
           </Link>
@@ -116,7 +116,7 @@ export default async function Home() {
             <Link
               key={machine.opendbId}
               href={`/rules/${machine.opendbId}`}
-              className="p-4 border border-gray-200 rounded-lg hover:border-[var(--bright-green)] hover:shadow-md transition-all"
+              className="p-4 border border-gray-200 rounded-lg hover:border-[var(--dark-green)] hover:shadow-md transition-all"
             >
               <span className="text-[var(--dark-green)] font-medium">{machine.name}</span>
             </Link>
@@ -127,7 +127,7 @@ export default async function Home() {
           <div className="text-center mt-8">
             <Link
               href="/list"
-              className="text-[var(--bright-green)] hover:underline font-medium"
+              className="text-[var(--dark-green)] hover:underline font-medium"
             >
               View all machines →
             </Link>

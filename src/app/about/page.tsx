@@ -55,7 +55,7 @@ export default function AboutPage() {
               href="https://silverballmania.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               silverballmania.com
             </a>
@@ -74,7 +74,7 @@ export default function AboutPage() {
               href="https://pintips.net"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               PinTips.net
             </a>
@@ -85,7 +85,7 @@ export default function AboutPage() {
               href="https://opdb.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               OPDB.org
             </a>
@@ -96,7 +96,7 @@ export default function AboutPage() {
               href="https://pinballmap.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               Pinball Map
             </a>
@@ -107,7 +107,7 @@ export default function AboutPage() {
               href="https://www.ifpapinball.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--bright-green)] hover:underline"
+              className="text-[var(--dark-green)] hover:underline"
             >
               IFPA
             </a>
@@ -119,7 +119,7 @@ export default function AboutPage() {
       <div className="text-center pt-8 border-t border-gray-200">
         <Link
           href="/"
-          className="text-[var(--bright-green)] hover:underline font-medium"
+          className="text-[var(--dark-green)] hover:underline font-medium"
         >
           ← Back to Home
         </Link>
