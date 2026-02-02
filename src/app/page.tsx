@@ -9,7 +9,7 @@ function getSupabaseClient() {
   )
 }
 
-async function getRecentMachines() {
+async function getRandomMachines() {
   try {
     const supabase = getSupabaseClient()
 
@@ -19,21 +19,28 @@ async function getRecentMachines() {
         opendb_id,
         pinball_machines!inner(name)
       `)
-      .limit(20)
 
     if (error) return []
 
-    return (data || []).map(item => ({
+    const machines = (data || []).map(item => ({
       opendbId: item.opendb_id,
       name: (item.pinball_machines as unknown as { name: string }).name,
     }))
+
+    // Shuffle and return 20 random machines
+    for (let i = machines.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [machines[i], machines[j]] = [machines[j], machines[i]];
+    }
+
+    return machines.slice(0, 20)
   } catch {
     return [];
   }
 }
 
 export default async function Home() {
-  const recentMachines = await getRecentMachines();
+  const recentMachines = await getRandomMachines();
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
@@ -43,7 +50,7 @@ export default async function Home() {
           Welcome to Bob&apos;s Guide to Classic Pinball Machines
         </h1>
 
-        <div className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto space-y-4">
+        <div className="text-lg text-gray-600 mb-8 space-y-4 text-left">
           <p>
             This guide covers approx. 400 pinball machines made from the 1960&apos;s through the mid-1980&apos;s.
           </p>
@@ -75,34 +82,36 @@ export default async function Home() {
         </div>
 
         {/* Search box */}
-        <h2 className="text-xl font-semibold text-[var(--dark-grey)] mb-4">
-          Search for a machine
-        </h2>
-        <div className="flex justify-center mb-4">
-          <PinSearch autoFocus placeholder="Search for a pinball machine..." />
-        </div>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-[var(--dark-green)] mb-6">
+            Search for a machine
+          </h2>
+          <div className="flex justify-center mb-4">
+            <PinSearch autoFocus placeholder="Search for a pinball machine..." />
+          </div>
 
-        <p className="text-gray-600 mb-8">
-          You can also{' '}
-          <Link href="/list" className="text-[var(--dark-green)] hover:underline">
-            explore the list
-          </Link>
-          ...
-        </p>
+          <p className="text-gray-600 mb-8">
+            You can also{' '}
+            <Link href="/list" className="text-[var(--dark-green)] hover:underline">
+              explore the list
+            </Link>
+            ...
+          </p>
 
-        <div className="flex justify-center gap-4">
-          <Link
-            href="/list"
-            className="bg-[var(--dark-green)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] transition-colors"
-          >
-            Browse All Machines
-          </Link>
-          <Link
-            href="/guide"
-            className="border-2 border-[var(--dark-green)] text-[var(--dark-green)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] hover:text-white transition-colors"
-          >
-            Read the Guide
-          </Link>
+          <div className="flex justify-center gap-4">
+            <Link
+              href="/list"
+              className="bg-[var(--dark-green)] text-white text-center px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] transition-colors"
+            >
+              Browse All Machines
+            </Link>
+            <Link
+              href="/guide"
+              className="border-2 border-[var(--dark-green)] text-[var(--dark-green)] text-center px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] hover:text-white transition-colors"
+            >
+              Read the Guide
+            </Link>
+          </div>
         </div>
       </section>
 
