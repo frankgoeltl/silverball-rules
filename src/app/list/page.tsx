@@ -1,24 +1,38 @@
 import PinList from '@/components/PinList'
 import type { Metadata } from 'next'
+import { createClient } from '@supabase/supabase-js'
 
 export const metadata: Metadata = {
   title: 'All Machines - Silverball Rules',
   description: 'Browse all pinball machines with rules in our database. Filter by letter to find your machine.'
 }
 
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+
 async function getAllMachines() {
   try {
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/pinrules/opendbids`, {
-      next: { revalidate: 3600 }
-    })
-    if (!response.ok) return []
-    const data = await response.json()
-    return data.sort((a: { name: string }, b: { name: string }) =>
-      a.name.localeCompare(b.name)
-    )
+    const supabase = getSupabaseClient()
+
+    const { data, error } = await supabase
+      .from('pinball_rules')
+      .select(`
+        opendb_id,
+        pinball_machines!inner(name)
+      `)
+
+    if (error) return []
+
+    const machines = (data || []).map(item => ({
+      opendbId: item.opendb_id,
+      name: (item.pinball_machines as unknown as { name: string }).name,
+    }))
+
+    return machines.sort((a, b) => a.name.localeCompare(b.name))
   } catch {
     return []
   }

@@ -1,17 +1,32 @@
 import PinSearch from "@/components/PinSearch";
 import Link from "next/link";
+import { createClient } from '@supabase/supabase-js'
+
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
 
 async function getRecentMachines() {
   try {
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/pinrules/opendbids`, {
-      next: { revalidate: 3600 }
-    });
-    if (!response.ok) return [];
-    const data = await response.json();
-    return data.slice(0, 20);
+    const supabase = getSupabaseClient()
+
+    const { data, error } = await supabase
+      .from('pinball_rules')
+      .select(`
+        opendb_id,
+        pinball_machines!inner(name)
+      `)
+      .limit(20)
+
+    if (error) return []
+
+    return (data || []).map(item => ({
+      opendbId: item.opendb_id,
+      name: (item.pinball_machines as unknown as { name: string }).name,
+    }))
   } catch {
     return [];
   }

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Share2, Info, Printer, ExternalLink } from 'lucide-react'
 import type { Metadata } from 'next'
+import { createClient } from '@supabase/supabase-js'
 
 interface Rule {
   opendbId: string
@@ -33,21 +34,74 @@ interface OpdbMachine {
 }
 
 interface PinData {
-  pinballMachine: Machine
+  pinballMachine: Machine | null
   rules: Rule[]
   opdbMachine: OpdbMachine | null
 }
 
+function getSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+
 async function getMachineData(opendbId: string): Promise<PinData | null> {
   try {
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/pinrules/${opendbId}`, {
-      next: { revalidate: 3600 }
-    })
-    if (!response.ok) return null
-    return response.json()
+    const supabase = getSupabaseClient()
+
+    // Fetch pinball machine
+    const { data: machine } = await supabase
+      .from('pinball_machines')
+      .select('id, opendb_id, name')
+      .eq('opendb_id', opendbId)
+      .single()
+
+    // Fetch pinball rules
+    const { data: rules } = await supabase
+      .from('pinball_rules')
+      .select('*')
+      .eq('opendb_id', opendbId)
+
+    // Fetch OPDB machine data
+    const { data: opdbMachine } = await supabase
+      .from('opdb_machines')
+      .select('*')
+      .eq('opdb_id', opendbId)
+      .single()
+
+    if (!machine && !opdbMachine) {
+      return null
+    }
+
+    return {
+      pinballMachine: machine ? {
+        id: machine.id,
+        name: machine.name,
+        opendbId: machine.opendb_id,
+      } : null,
+      rules: (rules || []).map(r => ({
+        opendbId: r.opendb_id,
+        quickieVersion: r.quickie_version,
+        goToFlipper: r.go_to_flipper,
+        riskIndex: r.risk_index,
+        shotsToMaster: r.shots_to_master,
+        styleAlert: r.style_alert,
+        skillShot: r.skill_shot,
+        fullRules: r.full_rules,
+        playfieldRisk: r.playfield_risk,
+      })),
+      opdbMachine: opdbMachine ? {
+        opdbId: opdbMachine.opdb_id,
+        name: opdbMachine.name,
+        manufacture_date: opdbMachine.manufacture_date,
+        manufacturer_name: opdbMachine.manufacturer_name,
+        type: opdbMachine.type,
+        display: opdbMachine.display,
+        player_count: opdbMachine.player_count,
+        image_url_medium: opdbMachine.image_url_medium,
+      } : null,
+    }
   } catch {
     return null
   }
@@ -63,9 +117,10 @@ export async function generateMetadata({
   if (!data) {
     return { title: 'Machine Not Found' }
   }
+  const machineName = data.pinballMachine?.name || data.opdbMachine?.name || 'Unknown Machine'
   return {
-    title: `${data.pinballMachine.name} - Silverball Rules`,
-    description: `Rules and strategy for ${data.pinballMachine.name} pinball machine. ${data.rules[0]?.quickieVersion?.slice(0, 150) || ''}`
+    title: `${machineName} - Silverball Rules`,
+    description: `Rules and strategy for ${machineName} pinball machine. ${data.rules[0]?.quickieVersion?.slice(0, 150) || ''}`
   }
 }
 
@@ -83,12 +138,13 @@ export default async function RulesPage({
   const { opendbId } = await params
   const data = await getMachineData(opendbId)
 
-  if (!data) {
+  if (!data || (!data.pinballMachine && !data.opdbMachine)) {
     notFound()
   }
 
   const { pinballMachine, rules, opdbMachine } = data
   const rule = rules[0]
+  const machineName = pinballMachine?.name || opdbMachine?.name || 'Unknown Machine'
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
@@ -97,7 +153,7 @@ export default async function RulesPage({
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-[var(--dark-green)] mb-2">
-              {pinballMachine.name}
+              {machineName}
             </h1>
             {opdbMachine && (
               <p className="text-gray-600">
@@ -221,11 +277,11 @@ export default async function RulesPage({
         </h2>
         <div className="flex flex-wrap gap-3">
           <ExternalLinkButton
-            href={`https://pintips.net/search?q=${encodeURIComponent(pinballMachine.name)}`}
+            href={`https://pintips.net/search?q=${encodeURIComponent(machineName)}`}
             label="PinTips"
           />
           <ExternalLinkButton
-            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(pinballMachine.name + ' pinball')}`}
+            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(machineName + ' pinball')}`}
             label="YouTube"
           />
           {opdbMachine?.opdbId && (
@@ -248,7 +304,7 @@ export default async function RulesPage({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={opdbMachine.image_url_medium}
-                alt={`${pinballMachine.name} backglass`}
+                alt={`${machineName} backglass`}
                 className="max-w-full md:max-w-[50%] mx-auto rounded-lg"
               />
             </div>
@@ -257,7 +313,7 @@ export default async function RulesPage({
             <dl className="grid grid-cols-2 gap-4">
               <div>
                 <dt className="text-sm text-gray-500">Name</dt>
-                <dd className="font-medium">{pinballMachine.name}</dd>
+                <dd className="font-medium">{machineName}</dd>
               </div>
               {opdbMachine?.manufacturer_name && (
                 <div>
