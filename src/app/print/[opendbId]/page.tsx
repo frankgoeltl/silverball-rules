@@ -163,7 +163,7 @@ export default async function PrintPage({
             <img
               src={opdbMachine.image_url_medium}
               alt={`${machineName} backglass`}
-              className="w-40 h-auto"
+              className="w-80 h-auto"
             />
           </div>
         )}

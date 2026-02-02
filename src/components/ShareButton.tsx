@@ -27,11 +27,18 @@ export default function ShareButton() {
   return (
     <button
       onClick={handleShare}
-      className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      className={`flex items-center gap-2 rounded-full transition-colors ${
+        copied
+          ? 'px-4 py-2 bg-[var(--dark-green)] text-white'
+          : 'p-3 bg-gray-100 hover:bg-gray-200'
+      }`}
       title={copied ? 'Copied!' : 'Share'}
     >
       {copied ? (
-        <Check size={20} className="text-[var(--dark-green)]" />
+        <>
+          <Check size={18} />
+          <span className="text-sm font-medium">Copied!</span>
+        </>
       ) : (
         <Share2 size={20} className="text-gray-600" />
       )}
