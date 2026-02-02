@@ -23,14 +23,16 @@ Silverball Rules - A pinball machine rules API and web application.
 - [x] Database schema ready (`supabase/schema.sql`)
 - [x] API routes created (3 endpoints)
 - [x] Migration/import scripts (`scripts/`)
+- [x] Supabase project created and configured
+- [x] Data migration completed (2,072 machines, 422 rules)
+- [x] OPDB machine data imported (421 machines with images)
+- [x] Frontend pages built (Home, List, Rules, Print, Guide)
+- [x] Deployed to Vercel (silverball-rules.vercel.app)
 
-### Pending
-- [ ] Create Supabase project at supabase.com
-- [ ] Run schema.sql in Supabase SQL Editor
-- [ ] Set up .env.local with Supabase credentials
-- [ ] Run data migration (`npm run migrate`)
-- [ ] Build frontend pages and components
-- [ ] Deploy to Vercel
+### Database Stats
+- `pinball_machines`: 2,072 records
+- `pinball_rules`: 422 records
+- `opdb_machines`: 421 records (with manufacturer, year, images)
 
 ## Common Commands
 
@@ -43,6 +45,7 @@ npm run lint         # Run ESLint
 # Data Management
 npm run migrate      # Initial data migration from JSON files
 npm run import       # Import content updates
+npm run import-opdb  # Fetch/update OPDB machine data (manufacturer, year, images)
 ```
 
 ## API Endpoints
@@ -62,6 +65,7 @@ npm run import       # Import content updates
 - `supabase/schema.sql` - Database schema
 - `scripts/migrate-data.ts` - Data migration script
 - `scripts/import.ts` - Content update import tool
+- `scripts/import-opdb.ts` - OPDB API data import
 
 ## Data Source
 
