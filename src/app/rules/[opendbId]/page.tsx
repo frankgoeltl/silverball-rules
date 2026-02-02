@@ -31,6 +31,7 @@ interface OpdbMachine {
   display: string | null
   player_count: number | null
   image_url_medium: string | null
+  ipdb_id: number | null
 }
 
 interface PinData {
@@ -100,6 +101,7 @@ async function getMachineData(opendbId: string): Promise<PinData | null> {
         display: opdbMachine.display,
         player_count: opdbMachine.player_count,
         image_url_medium: opdbMachine.image_url_medium,
+        ipdb_id: opdbMachine.ipdb_id,
       } : null,
     }
   } catch {
@@ -277,15 +279,15 @@ export default async function RulesPage({
         </h2>
         <div className="flex flex-wrap gap-3">
           <ExternalLinkButton
-            href={`https://pintips.net/search?q=${encodeURIComponent(machineName)}`}
+            href={`https://pintips.net/opdb/${opendbId}`}
             label="PinTips"
           />
           <ExternalLinkButton
-            href={`https://www.pinvids.net/?query=${encodeURIComponent(machineName)}`}
+            href={`https://pinballvideos.com/m/?q=${opendbId}`}
             label="PinVideos"
           />
           <ExternalLinkButton
-            href={`https://matchplay.events/live/ratings/machine/${encodeURIComponent(machineName)}`}
+            href={`https://next.matchplay.events/pintips/${opendbId}`}
             label="Match Play"
           />
           <ExternalLinkButton
@@ -293,12 +295,18 @@ export default async function RulesPage({
             label="YouTube"
           />
           <ExternalLinkButton
-            href={`https://opdb.org/search?q=${encodeURIComponent(machineName)}`}
+            href={`https://opdb.org/search?q=${opendbId}`}
             label="OPDB"
           />
           <ExternalLinkButton
-            href={`https://www.ipdb.org/search.pl?name=${encodeURIComponent(machineName)}&searchtype=quick`}
+            href={opdbMachine?.ipdb_id
+              ? `https://www.ipdb.org/machine.cgi?id=${opdbMachine.ipdb_id}`
+              : `https://www.ipdb.org/search.pl?name=${encodeURIComponent(machineName)}&searchtype=quick`}
             label="IPDB"
+          />
+          <ExternalLinkButton
+            href={`https://nypinball.com/flyers/${machineName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
+            label="Flyer"
           />
         </div>
       </section>
