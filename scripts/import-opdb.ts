@@ -15,7 +15,7 @@ import * as path from 'path'
 // Load .env.local from project root
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 
-const OPDB_API_KEY = 'a8iN1XvJIg4viSpVfcrlZjI2iBbm6n93JBSQu7C1eF8jRndjGvPXIHS7VlZb'
+const OPDB_API_KEY = process.env.OPDB_API_KEY
 const OPDB_API_BASE = 'https://opdb.org/api/machines'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -24,6 +24,12 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('Error: Missing Supabase environment variables')
   console.error('Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local')
+  process.exit(1)
+}
+
+if (!OPDB_API_KEY) {
+  console.error('Error: Missing OPDB_API_KEY environment variable')
+  console.error('Set OPDB_API_KEY in .env.local')
   process.exit(1)
 }
 

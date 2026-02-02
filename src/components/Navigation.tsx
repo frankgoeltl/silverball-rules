@@ -15,8 +15,8 @@ export default function Navigation() {
   }
 
   const navLinks = [
-    { href: '/guide', label: 'Guide', icon: BookOpen },
     { href: '/list', label: 'List', icon: List },
+    { href: '/guide', label: 'Guide', icon: BookOpen },
     { href: '/about', label: 'About', icon: Info },
     { href: '/support', label: 'Support', icon: Mail },
     { href: '/search', label: 'Search', icon: Search },
