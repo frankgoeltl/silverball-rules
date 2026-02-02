@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   title: "Silverball Rules - Bob's Guide to Classic Pinball Machines",
   description: "Rules, tips, and strategies for classic pinball machines. Find quickie rules, full strategies, and expert advice from Bob Matthews.",
   keywords: "pinball, rules, strategy, classic pinball, Bob Matthews, silverball",
+  metadataBase: new URL('https://silverball.rules'),
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -27,6 +28,18 @@ export const metadata: Metadata = {
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Silverball Rules',
+    title: "Silverball Rules - Bob's Guide to Classic Pinball Machines",
+    description: "Rules, tips, and strategies for classic pinball machines. Find quickie rules, full strategies, and expert advice from Bob Matthews.",
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Silverball Rules - Bob's Guide to Classic Pinball Machines",
+    description: "Rules, tips, and strategies for classic pinball machines.",
   },
 };
 

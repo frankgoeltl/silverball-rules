@@ -135,9 +135,26 @@ export async function generateMetadata({
     return { title: 'Machine Not Found' }
   }
   const machineName = data.pinballMachine?.name || data.opdbMachine?.name || 'Unknown Machine'
+  const description = `Rules and strategy for ${machineName} pinball machine. ${data.rules[0]?.quickieVersion?.slice(0, 150) || ''}`
+  const imageUrl = data.opdbMachine?.image_url_medium
+
   return {
     title: `${machineName} - Silverball Rules`,
-    description: `Rules and strategy for ${machineName} pinball machine. ${data.rules[0]?.quickieVersion?.slice(0, 150) || ''}`
+    description,
+    openGraph: {
+      title: `${machineName} Pinball Rules`,
+      description,
+      type: 'article',
+      ...(imageUrl && {
+        images: [{ url: imageUrl, alt: `${machineName} backglass` }],
+      }),
+    },
+    twitter: {
+      card: imageUrl ? 'summary_large_image' : 'summary',
+      title: `${machineName} Pinball Rules`,
+      description,
+      ...(imageUrl && { images: [imageUrl] }),
+    },
   }
 }
 
@@ -163,8 +180,42 @@ export default async function RulesPage({
   const rule = rules[0]
   const machineName = pinballMachine?.name || opdbMachine?.name || 'Unknown Machine'
 
+  // JSON-LD structured data for rich search results
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: `${machineName} Pinball Rules`,
+    description: rule?.quickieVersion || `Rules and strategy for ${machineName} pinball machine`,
+    ...(opdbMachine?.image_url_medium && { image: opdbMachine.image_url_medium }),
+    author: {
+      '@type': 'Person',
+      name: 'Bob Matthews',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Silverball Rules',
+      url: 'https://silverball.rules',
+    },
+    mainEntity: {
+      '@type': 'Product',
+      name: machineName,
+      category: 'Pinball Machine',
+      ...(opdbMachine?.manufacturer_name && {
+        manufacturer: { '@type': 'Organization', name: opdbMachine.manufacturer_name },
+      }),
+      ...(opdbMachine?.manufacture_date && {
+        releaseDate: opdbMachine.manufacture_date,
+      }),
+      ...(opdbMachine?.image_url_medium && { image: opdbMachine.image_url_medium }),
+    },
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-start justify-between gap-4">
