@@ -179,7 +179,7 @@ export default async function PrintPage({
           )}
           {rule?.quickieVersion && (
             <div className="mt-3 p-3 bg-gray-100 rounded">
-              <p className="font-bold mb-1">Quickie Version:</p>
+              <h2 className="text-lg font-bold text-dark-green mb-1">Quickie Version:</h2>
               <p className="whitespace-pre-line capitalize-first-letter">{rule.quickieVersion}</p>
             </div>
           )}
