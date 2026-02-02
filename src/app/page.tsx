@@ -54,6 +54,24 @@ export default async function Home() {
           <p>
             This guide covers approx. 400 pinball machines made from the 1960&apos;s through the mid-1980&apos;s.
           </p>
+
+          {/* Search box - mobile position (between first two paragraphs) */}
+          <div className="md:hidden text-center py-4">
+            <h2 className="text-2xl font-bold text-[var(--dark-green)] mb-3">
+              Search for a machine
+            </h2>
+            <div className="flex justify-center mb-2">
+              <PinSearch placeholder="Search for a pinball machine..." />
+            </div>
+            <p className="text-gray-600 text-sm">
+              You can also{' '}
+              <Link href="/list" className="text-[var(--dark-green)] hover:underline">
+                explore the list
+              </Link>
+              ...
+            </p>
+          </div>
+
           <p>
             The guide is presented free - if you like it, you can send a donation to{' '}
             <a
@@ -81,8 +99,8 @@ export default async function Home() {
           </p>
         </div>
 
-        {/* Search box */}
-        <div className="text-center">
+        {/* Search box - desktop position (after intro text) */}
+        <div className="hidden md:block text-center">
           <h2 className="text-2xl font-bold text-[var(--dark-green)] mb-6">
             Search for a machine
           </h2>
@@ -112,6 +130,22 @@ export default async function Home() {
               Read the Guide
             </Link>
           </div>
+        </div>
+
+        {/* Action buttons - mobile only (after intro text) */}
+        <div className="md:hidden flex flex-col gap-3">
+          <Link
+            href="/list"
+            className="bg-[var(--dark-green)] text-white text-center px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] transition-colors"
+          >
+            Browse All Machines
+          </Link>
+          <Link
+            href="/guide"
+            className="border-2 border-[var(--dark-green)] text-[var(--dark-green)] text-center px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] hover:text-white transition-colors"
+          >
+            Read the Guide
+          </Link>
         </div>
       </section>
 
