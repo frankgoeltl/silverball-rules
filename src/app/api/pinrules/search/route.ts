@@ -12,37 +12,19 @@ export async function GET(request: NextRequest) {
   const supabase = createServerClient()
 
   // Search machines by name that have rules
-  // Using ilike for case-insensitive search (different from .NET which was case-sensitive)
+  // Using ilike for case-insensitive search and inner join to only get machines with rules
   const { data, error } = await supabase
     .from('pinball_machines')
-    .select('opendb_id, name')
+    .select(`
+      opendb_id,
+      name,
+      pinball_rules!inner(opendb_id)
+    `)
     .ilike('name', `%${query}%`)
-    .in('opendb_id',
-      supabase.from('pinball_rules').select('opendb_id')
-    )
 
   if (error) {
-    // Fallback: simpler query if the subquery doesn't work
-    const { data: fallbackData, error: fallbackError } = await supabase
-      .from('pinball_machines')
-      .select(`
-        opendb_id,
-        name,
-        pinball_rules!inner(opendb_id)
-      `)
-      .ilike('name', `%${query}%`)
-
-    if (fallbackError) {
-      console.error('Error searching machines:', fallbackError)
-      return NextResponse.json({ error: 'Failed to search' }, { status: 500 })
-    }
-
-    const response = (fallbackData || []).map(item => ({
-      name: item.name,
-      opendbId: item.opendb_id,
-    }))
-
-    return NextResponse.json(response)
+    console.error('Error searching machines:', error)
+    return NextResponse.json({ error: 'Failed to search' }, { status: 500 })
   }
 
   // Format response to match existing .NET API format

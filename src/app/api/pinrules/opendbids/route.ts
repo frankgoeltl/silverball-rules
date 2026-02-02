@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   // Format response to match existing .NET API format
   const response = (data || []).map(item => ({
     opendbId: item.opendb_id,
-    name: (item.pinball_machines as { name: string }).name,
+    name: (item.pinball_machines as unknown as { name: string }).name,
   }))
 
   return NextResponse.json(response)

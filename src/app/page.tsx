@@ -1,65 +1,124 @@
-import Image from "next/image";
+import PinSearch from "@/components/PinSearch";
+import Link from "next/link";
 
-export default function Home() {
+async function getRecentMachines() {
+  try {
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/pinrules/opendbids`, {
+      next: { revalidate: 3600 }
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.slice(0, 20);
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const recentMachines = await getRecentMachines();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <div className="max-w-4xl mx-auto px-6 py-12">
+      {/* Hero section */}
+      <section className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold text-[var(--dark-green)] mb-6">
+          Welcome to Bob&apos;s Guide to Classic Pinball Machines
+        </h1>
+
+        <div className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto space-y-4">
+          <p>
+            This guide covers approx. 400 pinball machines made from the 1960&apos;s through the mid-1980&apos;s.
+          </p>
+          <p>
+            The guide is presented free - if you like it, you can send a donation to{' '}
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://projectpinball.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--bright-green)] hover:underline"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              Project Pinball
+            </a>
+            {' '}and mention Bob.
+          </p>
+          <p>
+            There&apos;s an{' '}
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://youtu.be/PvgZ6LF4A-g"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--bright-green)] hover:underline"
             >
-              Learning
-            </a>{" "}
-            center.
+              introduction video on YouTube
+            </a>
+            {' '}if you&apos;d like to learn more about all the features. Then take your time exploring
+            the full guide — not just the quickie versions — it&apos;s worth it!
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Search box */}
+        <h2 className="text-xl font-semibold text-[var(--dark-grey)] mb-4">
+          Search for a machine
+        </h2>
+        <div className="flex justify-center mb-4">
+          <PinSearch autoFocus placeholder="Search for a pinball machine..." />
         </div>
-      </main>
+
+        <p className="text-gray-600 mb-8">
+          You can also{' '}
+          <Link href="/list" className="text-[var(--bright-green)] hover:underline">
+            explore the list
+          </Link>
+          ...
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <Link
+            href="/list"
+            className="bg-[var(--bright-green)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[var(--dark-green)] transition-colors"
+          >
+            Browse All Machines
+          </Link>
+          <Link
+            href="/guide"
+            className="border-2 border-[var(--bright-green)] text-[var(--bright-green)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--bright-green)] hover:text-white transition-colors"
+          >
+            Read the Guide
+          </Link>
+        </div>
+      </section>
+
+      {/* Featured machines */}
+      <section>
+        <h2 className="text-2xl font-bold text-[var(--dark-green)] mb-6">
+          Featured Machines
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {recentMachines.map((machine: { opendbId: string; name: string }) => (
+            <Link
+              key={machine.opendbId}
+              href={`/rules/${machine.opendbId}`}
+              className="p-4 border border-gray-200 rounded-lg hover:border-[var(--bright-green)] hover:shadow-md transition-all"
+            >
+              <span className="text-[var(--dark-green)] font-medium">{machine.name}</span>
+            </Link>
+          ))}
+        </div>
+
+        {recentMachines.length > 0 && (
+          <div className="text-center mt-8">
+            <Link
+              href="/list"
+              className="text-[var(--bright-green)] hover:underline font-medium"
+            >
+              View all machines →
+            </Link>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

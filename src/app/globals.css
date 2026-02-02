@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
 :root {
+  /* Silverball color palette */
+  --black: #000000;
+  --white: #ffffff;
+  --light-grey: #e8e8e8;
+  --dark-grey: #383838;
+  --bright-green: #03A737;
+  --dark-green: #006030;
+  --red: #cd202c;
+  --dark-orange: #ff4c00;
+
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -8,19 +18,27 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-bright-green: var(--bright-green);
+  --color-dark-green: var(--dark-green);
+  --color-dark-grey: var(--dark-grey);
+  --color-light-grey: var(--light-grey);
+  --color-dark-orange: var(--dark-orange);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
+/* Preserve line breaks in rule text */
+.preserve-linebreaks {
+  white-space: pre-line;
+}
+
+/* First letter capitalization for paragraphs */
+.capitalize-first-letter::first-letter {
+  text-transform: uppercase;
 }

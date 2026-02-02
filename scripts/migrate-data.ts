@@ -16,8 +16,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-// Load environment variables
-import 'dotenv/config'
+// Load environment variables from .env.local
+import * as dotenv from 'dotenv'
+dotenv.config({ path: '.env.local' })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -150,22 +151,31 @@ async function migrateRules(dataPath: string) {
 async function main() {
   console.log('=== Silverball Rules Data Migration ===\n')
 
+  const args = process.argv.slice(2)
+  const skipConfirm = args.includes('--yes') || args.includes('-y')
+
   // Look for data in scripts/data/ or ask for path
   let dataPath = path.join(__dirname, 'data')
 
   if (!fs.existsSync(dataPath)) {
     console.log('Default data path not found: scripts/data/')
-    const customPath = await prompt('Enter path to JSON files (or press Enter to use ../sbm-23-01_API/updates/update-2026-01): ')
-    dataPath = customPath || path.resolve(__dirname, '../../sbm-23-01_API/updates/update-2026-01')
+    if (skipConfirm) {
+      dataPath = path.resolve(__dirname, '../../sbm-23-01_API/updates/update-2026-01')
+    } else {
+      const customPath = await prompt('Enter path to JSON files (or press Enter to use ../sbm-23-01_API/updates/update-2026-01): ')
+      dataPath = customPath || path.resolve(__dirname, '../../sbm-23-01_API/updates/update-2026-01')
+    }
   }
 
   console.log(`Using data from: ${dataPath}\n`)
 
   // Confirm before proceeding
-  const confirm = await prompt('This will insert/update data in Supabase. Continue? (y/n): ')
-  if (confirm.toLowerCase() !== 'y') {
-    console.log('Aborted.')
-    process.exit(0)
+  if (!skipConfirm) {
+    const confirm = await prompt('This will insert/update data in Supabase. Continue? (y/n): ')
+    if (confirm.toLowerCase() !== 'y') {
+      console.log('Aborted.')
+      process.exit(0)
+    }
   }
 
   console.log('\n--- Migrating Machines ---')

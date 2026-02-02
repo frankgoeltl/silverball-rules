@@ -1,0 +1,322 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { Share2, Info, Printer, ExternalLink } from 'lucide-react'
+import type { Metadata } from 'next'
+
+interface Rule {
+  opendbId: string
+  quickieVersion: string | null
+  goToFlipper: string | null
+  riskIndex: string | null
+  shotsToMaster: string | null
+  styleAlert: string | null
+  skillShot: string | null
+  fullRules: string | null
+  playfieldRisk: string | null
+}
+
+interface Machine {
+  id: number
+  name: string
+  opendbId: string
+}
+
+interface OpdbMachine {
+  opdbId: string
+  name: string | null
+  manufacture_date: string | null
+  manufacturer_name: string | null
+  type: string | null
+  display: string | null
+  player_count: number | null
+  image_url_medium: string | null
+}
+
+interface PinData {
+  pinballMachine: Machine
+  rules: Rule[]
+  opdbMachine: OpdbMachine | null
+}
+
+async function getMachineData(opendbId: string): Promise<PinData | null> {
+  try {
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/pinrules/${opendbId}`, {
+      next: { revalidate: 3600 }
+    })
+    if (!response.ok) return null
+    return response.json()
+  } catch {
+    return null
+  }
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ opendbId: string }>
+}): Promise<Metadata> {
+  const { opendbId } = await params
+  const data = await getMachineData(opendbId)
+  if (!data) {
+    return { title: 'Machine Not Found' }
+  }
+  return {
+    title: `${data.pinballMachine.name} - Silverball Rules`,
+    description: `Rules and strategy for ${data.pinballMachine.name} pinball machine. ${data.rules[0]?.quickieVersion?.slice(0, 150) || ''}`
+  }
+}
+
+function formatYear(dateString: string | null): string {
+  if (!dateString) return 'Unknown'
+  const year = new Date(dateString).getFullYear()
+  return isNaN(year) ? 'Unknown' : year.toString()
+}
+
+export default async function RulesPage({
+  params
+}: {
+  params: Promise<{ opendbId: string }>
+}) {
+  const { opendbId } = await params
+  const data = await getMachineData(opendbId)
+
+  if (!data) {
+    notFound()
+  }
+
+  const { pinballMachine, rules, opdbMachine } = data
+  const rule = rules[0]
+
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-[var(--dark-green)] mb-2">
+              {pinballMachine.name}
+            </h1>
+            {opdbMachine && (
+              <p className="text-gray-600">
+                {opdbMachine.manufacturer_name && `${opdbMachine.manufacturer_name} • `}
+                {formatYear(opdbMachine.manufacture_date)}
+                {opdbMachine.type && ` • ${opdbMachine.type}`}
+              </p>
+            )}
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-2">
+            <button
+              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              title="Share"
+            >
+              <Share2 size={20} className="text-gray-600" />
+            </button>
+            <a
+              href="#machine-info"
+              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              title="Machine Info"
+            >
+              <Info size={20} className="text-gray-600" />
+            </a>
+            <Link
+              href={`/print/${opendbId}`}
+              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              title="Print"
+            >
+              <Printer size={20} className="text-gray-600" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Quickie Version */}
+      {rule?.quickieVersion && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
+            Quickie Version
+          </h2>
+          <div className="bg-[var(--light-grey)] p-4 rounded-lg">
+            <p className="text-lg preserve-linebreaks">{rule.quickieVersion}</p>
+          </div>
+        </section>
+      )}
+
+      {/* Quick stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {rule?.goToFlipper && (
+          <div className="bg-white border border-gray-200 p-4 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Go-To Flipper</h3>
+            <p className="text-lg font-semibold text-[var(--dark-green)]">{rule.goToFlipper}</p>
+          </div>
+        )}
+        {rule?.riskIndex && (
+          <div className="bg-white border border-gray-200 p-4 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Risk Index</h3>
+            <p className="text-lg font-semibold text-[var(--dark-green)]">{rule.riskIndex}</p>
+          </div>
+        )}
+        {rule?.shotsToMaster && (
+          <div className="bg-white border border-gray-200 p-4 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-500 mb-1">Shots to Master</h3>
+            <p className="text-lg font-semibold text-[var(--dark-green)]">{rule.shotsToMaster}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Skill Shot */}
+      {rule?.skillShot && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
+            Skill Shot
+          </h2>
+          <p className="preserve-linebreaks">{rule.skillShot}</p>
+        </section>
+      )}
+
+      {/* Style Alert */}
+      {rule?.styleAlert && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-[var(--dark-orange)] mb-3">
+            Style Alert
+          </h2>
+          <p className="preserve-linebreaks italic">{rule.styleAlert}</p>
+        </section>
+      )}
+
+      {/* Full Rules */}
+      {rule?.fullRules && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
+            Full Rules
+          </h2>
+          <div className="space-y-4">
+            {rule.fullRules.split('\n\n').map((paragraph, index) => (
+              <p key={index} className="preserve-linebreaks capitalize-first-letter">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Playfield Risk */}
+      {rule?.playfieldRisk && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
+            Playfield Risk
+          </h2>
+          <p className="preserve-linebreaks">{rule.playfieldRisk}</p>
+        </section>
+      )}
+
+      {/* External Links */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
+          External Links
+        </h2>
+        <div className="flex flex-wrap gap-3">
+          <ExternalLinkButton
+            href={`https://pintips.net/search?q=${encodeURIComponent(pinballMachine.name)}`}
+            label="PinTips"
+          />
+          <ExternalLinkButton
+            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(pinballMachine.name + ' pinball')}`}
+            label="YouTube"
+          />
+          {opdbMachine?.opdbId && (
+            <ExternalLinkButton
+              href={`https://opdb.org/machines/${opdbMachine.opdbId}`}
+              label="OPDB"
+            />
+          )}
+        </div>
+      </section>
+
+      {/* Machine Info */}
+      <section id="machine-info" className="mb-8 scroll-mt-24">
+        <h2 className="text-xl font-bold text-[var(--dark-green)] mb-3">
+          Machine Information
+        </h2>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          {opdbMachine?.image_url_medium && (
+            <div className="p-4 bg-gray-50">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={opdbMachine.image_url_medium}
+                alt={`${pinballMachine.name} backglass`}
+                className="max-w-full md:max-w-[50%] mx-auto rounded-lg"
+              />
+            </div>
+          )}
+          <div className="p-4">
+            <dl className="grid grid-cols-2 gap-4">
+              <div>
+                <dt className="text-sm text-gray-500">Name</dt>
+                <dd className="font-medium">{pinballMachine.name}</dd>
+              </div>
+              {opdbMachine?.manufacturer_name && (
+                <div>
+                  <dt className="text-sm text-gray-500">Manufacturer</dt>
+                  <dd className="font-medium">{opdbMachine.manufacturer_name}</dd>
+                </div>
+              )}
+              {opdbMachine?.manufacture_date && (
+                <div>
+                  <dt className="text-sm text-gray-500">Year</dt>
+                  <dd className="font-medium">{formatYear(opdbMachine.manufacture_date)}</dd>
+                </div>
+              )}
+              {opdbMachine?.type && (
+                <div>
+                  <dt className="text-sm text-gray-500">Type</dt>
+                  <dd className="font-medium">{opdbMachine.type}</dd>
+                </div>
+              )}
+              {opdbMachine?.display && (
+                <div>
+                  <dt className="text-sm text-gray-500">Display</dt>
+                  <dd className="font-medium">{opdbMachine.display}</dd>
+                </div>
+              )}
+              {opdbMachine?.player_count && (
+                <div>
+                  <dt className="text-sm text-gray-500">Players</dt>
+                  <dd className="font-medium">{opdbMachine.player_count}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* Back link */}
+      <div className="text-center">
+        <Link
+          href="/list"
+          className="text-[var(--bright-green)] hover:underline font-medium"
+        >
+          ← Back to machine list
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+function ExternalLinkButton({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--bright-green)] text-white rounded-lg hover:bg-[var(--dark-green)] transition-colors text-sm font-medium"
+    >
+      {label}
+      <ExternalLink size={14} />
+    </a>
+  )
+}
