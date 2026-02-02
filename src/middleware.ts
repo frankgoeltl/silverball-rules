@@ -9,6 +9,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Skip prefetch requests (Next.js Link prefetching)
+  const isPrefetch = request.headers.get('next-router-prefetch') === '1'
+    || request.headers.get('purpose') === 'prefetch'
+    || request.headers.get('sec-purpose') === 'prefetch'
+
+  if (isPrefetch) {
+    return NextResponse.next()
+  }
+
   // Don't block the response - log asynchronously
   logPageView(request, path).catch(() => {
     // Silently fail - don't affect user experience
