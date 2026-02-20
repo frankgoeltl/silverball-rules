@@ -119,8 +119,9 @@ export async function getTopMachines(): Promise<TopMachine[]> {
   noStore()
   const supabase = createServerClient()
 
-  // Use RPC function for aggregation
-  const { data: topMachinesData } = await supabase.rpc('get_top_machines')
+  // Query top machines by counting both /rules/[id] and /api/pinrules/[id] paths
+  // The old RPC function only counted /api/pinrules/ paths, missing frontend pageviews
+  const { data: topMachinesData } = await supabase.rpc('get_top_machines_v2')
 
   if (!topMachinesData || topMachinesData.length === 0) return []
 
