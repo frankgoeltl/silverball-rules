@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useTransition } from 'react'
-import { BarChart3, Clock, TrendingUp, Trophy, List, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect, useTransition, useCallback } from 'react'
+import { BarChart3, Clock, TrendingUp, Trophy, List, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import type { ReportData, TopMachine, PaginatedLogs } from '@/app/reports/actions'
 import { getTopMachines, getPaginatedLogs } from '@/app/reports/actions'
@@ -162,13 +162,18 @@ function OverviewTab({ data }: { data: ReportData }) {
 function TopMachinesTab() {
   const [machines, setMachines] = useState<TopMachine[]>([])
   const [loading, setLoading] = useState(true)
+  const [isPending, startTransition] = useTransition()
 
-  useEffect(() => {
-    getTopMachines().then(data => {
-      setMachines(data)
-      setLoading(false)
+  const refresh = useCallback(() => {
+    startTransition(() => {
+      getTopMachines().then(data => {
+        setMachines(data)
+        setLoading(false)
+      })
     })
   }, [])
+
+  useEffect(() => { refresh() }, [refresh])
 
   if (loading) {
     return <div className="text-center py-8 text-gray-500">Loading top machines...</div>
@@ -176,7 +181,17 @@ function TopMachinesTab() {
 
   return (
     <div className="bg-[var(--light-grey)] rounded-lg p-6">
-      <h3 className="text-lg font-bold text-[var(--dark-green)] mb-4">Top 10 Most Viewed Machines</h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold text-[var(--dark-green)]">Top 10 Most Viewed Machines</h3>
+        <button
+          onClick={refresh}
+          disabled={isPending}
+          className="p-2 rounded hover:bg-white/50 disabled:opacity-50 transition-colors"
+          title="Refresh"
+        >
+          <RefreshCw size={16} className={isPending ? 'animate-spin' : ''} />
+        </button>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -224,7 +239,7 @@ function LogsTab() {
     return <div className="text-center py-8 text-gray-500">Loading logs...</div>
   }
 
-  const { entries, total, totalPages } = logsData
+  const { entries, total, totalPages, machineNames } = logsData
 
   return (
     <div>
@@ -273,6 +288,11 @@ function LogsTab() {
                 <td className="py-2 px-3 font-mono text-gray-700">
                   {normalizePath(entry.path)}
                   {entry.query_string && <span className="text-gray-400">{entry.query_string}</span>}
+                  {(() => {
+                    const id = entry.path?.match(/(?:\/rules\/|\/api\/pinrules\/)([A-Za-z0-9_-]+)/)?.[1]
+                    const name = id && machineNames[id]
+                    return name ? <span className="block text-xs text-gray-500">{name}</span> : null
+                  })()}
                 </td>
                 <td className="py-2 px-3 text-gray-500 font-mono text-xs">{entry.ip_address}</td>
               </tr>

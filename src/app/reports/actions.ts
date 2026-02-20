@@ -69,6 +69,7 @@ export interface PaginatedLogs {
   page: number
   pageSize: number
   totalPages: number
+  machineNames: Record<string, string>
 }
 
 // Data fetching
@@ -165,11 +166,33 @@ export async function getPaginatedLogs(page: number = 1, pageSize: number = 50):
     .order('timestamp', { ascending: false })
     .range(offset, offset + pageSize - 1)
 
+  const entries = data || []
+
+  // Resolve machine names for paths like /rules/XXXXX or /api/pinrules/XXXXX
+  const opendbIds = [...new Set(
+    entries
+      .map(e => e.path?.match(/(?:\/rules\/|\/api\/pinrules\/)([A-Za-z0-9_-]+)/)?.[1])
+      .filter((id): id is string => !!id)
+  )]
+
+  let machineNames: Record<string, string> = {}
+  if (opendbIds.length > 0) {
+    const { data: machines } = await supabase
+      .from('pinball_machines')
+      .select('opendb_id, name')
+      .in('opendb_id', opendbIds)
+
+    machineNames = Object.fromEntries(
+      (machines || []).map(m => [m.opendb_id, m.name])
+    )
+  }
+
   return {
-    entries: data || [],
+    entries,
     total: totalCount,
     page,
     pageSize,
     totalPages,
+    machineNames,
   }
 }
