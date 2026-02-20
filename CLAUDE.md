@@ -83,3 +83,31 @@ Production URL: https://silverballsapi.azurewebsites.net
 
 - Do not auto commit
 - Keep API response format identical to .NET version for frontend compatibility
+
+## Recent Updates (2026-02-02)
+
+### Completed
+- Core Web Vitals optimization (LCP fix with next/image + generateStaticParams)
+- SEO: sitemap.xml, robots.txt, Open Graph, Twitter Cards, JSON-LD
+- Mobile layout improvements for home page search
+
+### Pending - Security Fixes (from audit)
+
+**Critical:**
+1. Move OPDB API key from `scripts/import-opdb.ts:18` to `.env.local`
+2. Rotate Supabase service role key
+
+**High:**
+3. Change weak reports password (`rulez`) to strong password
+4. Add rate limiting to API endpoints
+5. Enable Row Level Security in Supabase
+
+**Medium:**
+6. Add search input validation (length limit, escape wildcards)
+7. Improve auth cookie (use signed tokens instead of static value)
+8. Add security headers to next.config.ts
+
+### Unpushed Commits (3)
+- Core Web Vitals optimization
+- SEO optimizations
+- Mobile layout improvements

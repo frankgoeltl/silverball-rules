@@ -45,6 +45,20 @@ function getSupabaseClient() {
   )
 }
 
+export const dynamicParams = false
+
+export async function generateStaticParams() {
+  const supabase = getSupabaseClient()
+
+  const { data: rules } = await supabase
+    .from('pinball_rules')
+    .select('opendb_id')
+
+  return (rules || []).map((rule) => ({
+    opendbId: rule.opendb_id,
+  }))
+}
+
 async function getMachineData(opendbId: string): Promise<PinData | null> {
   try {
     const supabase = getSupabaseClient()

@@ -20,6 +20,7 @@ export async function logApiRequest(request: NextRequest, path: string) {
       path: path,
       query_string: request.nextUrl.search || null,
       ip_address: ip,
+      user_agent: request.headers.get('user-agent') || null,
     })
   } catch (error) {
     // Don't fail the request if logging fails

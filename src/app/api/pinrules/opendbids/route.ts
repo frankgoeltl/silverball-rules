@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { logApiRequest } from '@/lib/logging'
-import { getClientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 
 export async function GET(request: NextRequest) {
-  const ip = getClientIp(request)
-  const { allowed, resetAt } = checkRateLimit(ip)
-  if (!allowed) {
-    return rateLimitResponse(resetAt)
-  }
-
   const supabase = createServerClient()
 
   // Log the API request

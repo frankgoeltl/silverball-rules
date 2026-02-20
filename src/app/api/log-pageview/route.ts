@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
-import { getClientIp, checkRateLimit, rateLimitResponse } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
-  const ip = getClientIp(request)
-  const { allowed, resetAt } = checkRateLimit(ip)
-  if (!allowed) {
-    return rateLimitResponse(resetAt)
-  }
-
   try {
     const { path } = await request.json()
 
@@ -17,12 +10,16 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createServerClient()
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || request.headers.get('x-real-ip')
+      || 'unknown'
 
     await supabase.from('api_log_entries').insert({
       method: 'GET',
       path: path,
       query_string: null,
       ip_address: ip,
+      user_agent: request.headers.get('user-agent') || null,
     })
 
     return NextResponse.json({ success: true })
