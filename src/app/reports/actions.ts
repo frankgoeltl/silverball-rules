@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
+import { unstable_noStore as noStore } from 'next/cache'
 import { createServerClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 
@@ -115,6 +116,7 @@ export async function getReportData(): Promise<ReportData> {
 }
 
 export async function getTopMachines(): Promise<TopMachine[]> {
+  noStore()
   const supabase = createServerClient()
 
   // Use RPC function for aggregation
@@ -148,6 +150,7 @@ export async function getTopMachines(): Promise<TopMachine[]> {
 }
 
 export async function getPaginatedLogs(page: number = 1, pageSize: number = 50): Promise<PaginatedLogs> {
+  noStore()
   const supabase = createServerClient()
 
   // Get total count
